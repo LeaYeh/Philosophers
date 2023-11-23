@@ -7,6 +7,9 @@ SRCS		:= main.c \
 			checker.c \
 			init.c \
 			free.c \
+			time.c \
+			action.c \
+			monitor.c \
 			utils/ft_atoi.c \
 			utils/ft_isdigital.c \
 			utils/ft_isspace.c \

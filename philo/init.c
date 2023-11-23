@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 22:41:14 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/23 07:38:57 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/23 19:21:14 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ bool	init_philos(t_program *program)
 	program->philo = malloc(sizeof(t_philo) * program->num_of_philo);
 	if (!program->philo)
 		return (false);
-	i = 0;
-	while (i < program->num_of_philo)
+	i = -1;
+	while (++i < program->num_of_philo)
 	{
 		program->philo[i].id = i;
 		program->philo[i].eat_cnt = 0;
@@ -60,6 +60,8 @@ bool	init_philos(t_program *program)
 		program->philo[i].time_to_die = program->time_to_die;
 		program->philo[i].time_to_eat = program->time_to_eat;
 		program->philo[i].time_to_sleep = program->time_to_sleep;
+		program->philo[i].num_time_must_eat = program->num_time_must_eat;
+		program->philo[i].start_time = program->start_time;
 		program->philo[i].last_meal_time = get_ms_time();
 		program->philo[i].status = UNINITED;
 		if (pthread_mutex_init(&(program->philo[i].status_lock), NULL) != 0)
@@ -67,7 +69,6 @@ bool	init_philos(t_program *program)
 				free(program->philo), false);
 		assign_fork(program, i);
 		program->philo[i].p_write_lock = &(program->write);
-		i++;
 	}
 	return (true);
 }
@@ -92,6 +93,7 @@ bool	init_program(t_program *program, char **argv)
 	program->time_to_eat = ft_atoi(argv[3]);
 	program->time_to_sleep = ft_atoi(argv[4]);
 	program->num_time_must_eat = -1;
+	program->start_time = get_ms_time();
 	if (argv[5] && ft_atoi(argv[5]) > 0)
 		program->num_time_must_eat = ft_atoi(argv[5]);
 	if (!init_program_lock(program))

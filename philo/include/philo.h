@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 15:48:23 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/23 07:40:33 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/23 19:20:58 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 # include <sys/time.h>
 
 # define UNEXCEPT_FAILED 42
-# define TIME_INTERVAL_UNIT 500
+# define SUCCESS 0
+# define TIME_INTERVAL_UNIT 5000
 
 typedef enum s_status_code
 {
@@ -40,6 +41,8 @@ typedef struct s_philo
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
+	int				num_time_must_eat;
+	size_t			start_time;
 	int				eat_cnt;
 	size_t			last_meal_time;
 	t_status_code	status;
@@ -56,6 +59,7 @@ typedef struct s_program
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				num_time_must_eat;
+	size_t			start_time;
 	bool			is_someone_die;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write;
@@ -80,5 +84,16 @@ void	destory_program_lock(t_program *program);
 void	destory_philo_lock(t_program *program, int num_philo);
 
 size_t	get_ms_time(void);
+int		ft_usleep(size_t milliseconds);
+
+void	do_think(t_philo *philo);
+void	do_sleep(t_philo *philo);
+void	do_eat(t_philo *philo);
+
+void	*monitor(void *pointer);
+void	print_message(t_philo *philo, char *msg);
+
+void	exit_simulation(t_program *program);
+void	error_handle(t_program *program, char *msg);
 
 #endif
