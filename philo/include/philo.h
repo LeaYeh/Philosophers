@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 15:48:23 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/22 20:39:00 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/23 07:40:33 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,33 @@
 # include <stdbool.h>
 # include <pthread.h>
 # include <limits.h>
+# include <sys/time.h>
+
+# define UNEXCEPT_FAILED 42
+# define TIME_INTERVAL_UNIT 500
+
+typedef enum s_status_code
+{
+	UNINITED = -1,
+	THINK,
+	SLEEP,
+	EAT,
+	DEAD
+}	t_status_code;
 
 typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread;
+	int				num_of_philo;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				eat_cnt;
-	int				status;
+	size_t			last_meal_time;
+	t_status_code	status;
+	pthread_mutex_t	status_lock;
+	pthread_mutex_t	*p_write_lock;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*r_fork;
 }	t_philo;
@@ -57,5 +77,8 @@ bool	init_program(t_program *program, char **argv);
 
 void	free_forks(t_program *program);
 void	destory_program_lock(t_program *program);
+void	destory_philo_lock(t_program *program, int num_philo);
+
+size_t	get_ms_time(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 22:41:14 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/22 21:13:15 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/23 07:38:57 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,19 +47,26 @@ void	assign_fork(t_program *program, int id)
 bool	init_philos(t_program *program)
 {
 	int	i;
-	int	num_philo;
 
-	num_philo = program->num_of_philo;
-	program->philo = (t_philo *)malloc(sizeof(t_philo) * num_philo);
+	program->philo = malloc(sizeof(t_philo) * program->num_of_philo);
 	if (!program->philo)
 		return (false);
 	i = 0;
-	while (i < num_philo)
+	while (i < program->num_of_philo)
 	{
 		program->philo[i].id = i;
 		program->philo[i].eat_cnt = 0;
-		program->philo[i].status = 0;
+		program->philo[i].num_of_philo = program->num_of_philo;
+		program->philo[i].time_to_die = program->time_to_die;
+		program->philo[i].time_to_eat = program->time_to_eat;
+		program->philo[i].time_to_sleep = program->time_to_sleep;
+		program->philo[i].last_meal_time = get_ms_time();
+		program->philo[i].status = UNINITED;
+		if (pthread_mutex_init(&(program->philo[i].status_lock), NULL) != 0)
+			return (destory_philo_lock(program, i),
+				free(program->philo), false);
 		assign_fork(program, i);
+		program->philo[i].p_write_lock = &(program->write);
 		i++;
 	}
 	return (true);
