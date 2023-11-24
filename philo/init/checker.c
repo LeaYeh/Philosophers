@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 22:14:08 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/21 22:38:08 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/24 22:05:36 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ bool	is_input_digital(int argc, char **argv)
 	}
 	return (true);
 }
+
 bool	is_input_valid(char **argv)
 {
 	if (ft_atoi(argv[1]) < 1)
@@ -44,8 +45,8 @@ bool	is_input_valid(char **argv)
 	else if (argv[5])
 	{
 		if (ft_atoi(argv[5]) < 1)
-			return (write(2, 
-				"Invalid number of times each philosopher must eat.\n", 52),
+			return (write(2,
+					"Invalid number of times each philo must eat.\n", 46),
 				false);
 	}
 	return (true);

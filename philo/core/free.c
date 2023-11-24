@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 14:58:47 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/23 19:04:37 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/24 22:29:20 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,16 @@ void	free_forks(t_program *program)
 	int	i;
 
 	i = 0;
-	while (i < program->num_of_philo)
+	while (i < program->data.num_of_philo)
 		pthread_mutex_destroy(&(program->forks[i++]));
-}
-
-void	destory_philo_lock(t_program *program, int num_philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < num_philo)
-		pthread_mutex_destroy(&(program->philo[i++].status_lock));
-}
-
-void	destory_program_lock(t_program *program)
-{
-	free_forks(program);
-	pthread_mutex_destroy(&(program->write));
-	pthread_mutex_destroy(&(program->lock));
+	free(program->forks);
 }
 
 void	free_all(t_program *program)
 {
 	free_forks(program);
 	destory_program_lock(program);
-	destory_philo_lock(program, program->num_of_philo);
+	destory_philo_lock(program, program->data.num_of_philo);
 	free(program->philo);
 }
 
