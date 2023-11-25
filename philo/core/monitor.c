@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 23:29:47 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:26:39 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 18:38:30 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	print_message(t_philo *philo, char *msg)
 {
+	if (!is_alive(philo))
+		return ;
 	pthread_mutex_lock(philo->p_write_lock);
 	printf("%zu %d %s\n",
 		get_ms_time() - philo->data->start_time, philo->id + 1, msg);
@@ -28,19 +30,22 @@ void	update_die_status(t_philo *philo_arr)
 	i = 0;
 	while (i < philo_arr[0].data->num_of_philo)
 	{
-		pthread_mutex_lock(&(philo_arr[i].dead_lock));
+		pthread_mutex_lock(&(philo_arr[i].meal_lock));
 		diff_time = get_ms_time() - philo_arr[i].last_meal_time;
-		if (!philo_arr[i].is_dead && \
-			diff_time >= (size_t)philo_arr[i].data->time_to_die)
+		if (diff_time >= (size_t)philo_arr[i].data->time_to_die)
 		{
-			pthread_mutex_lock(&(philo_arr[i].data->share_data_lock));
-			philo_arr[i].data->is_someone_die = true;
-			pthread_mutex_unlock(&(philo_arr[i].data->share_data_lock));
-			philo_arr[i].is_dead = true;
-			print_message(&(philo_arr[i]), "died");
+			pthread_mutex_unlock(&(philo_arr[i].meal_lock));
+			break ;
 		}
-		pthread_mutex_unlock(&(philo_arr[i].dead_lock));
+		pthread_mutex_unlock(&(philo_arr[i].meal_lock));
 		i++;
+	}
+	if (i < philo_arr[0].data->num_of_philo)
+	{
+		print_message(&(philo_arr[i]), "is die");
+		pthread_mutex_lock(&(philo_arr[i].data->share_data_lock));
+		philo_arr[i].data->is_someone_die = true;
+		pthread_mutex_unlock(&(philo_arr[i].data->share_data_lock));
 	}
 }
 
@@ -64,20 +69,16 @@ bool	check_if_everyone_eat(t_philo *philo_arr)
 	return (count == philo_arr[0].data->num_of_philo);
 }
 
-bool	check_if_someone_die(t_philo *philo_arr)
+bool	check_if_someone_die(t_program *program)
 {
-	int		i;
+	bool	ret;
 
-	i = 0;
-	while (i < philo_arr[0].data->num_of_philo)
-	{
-		pthread_mutex_lock(&(philo_arr[i].data->share_data_lock));
-		if (philo_arr[i].eat_cnt >= philo_arr[0].data->num_time_must_eat)
-			return (true);
-		pthread_mutex_unlock(&(philo_arr[i].data->share_data_lock));
-		i++;
-	}
-	return (false);
+	ret = false;
+	pthread_mutex_lock(&(program->data.share_data_lock));
+	if (program->data.is_someone_die)
+		ret = true;
+	pthread_mutex_unlock(&(program->data.share_data_lock));
+	return (ret);
 }
 
 void	*monitor(void *pointer)
@@ -88,10 +89,15 @@ void	*monitor(void *pointer)
 	while (true)
 	{
 		update_die_status(program->philo);
-		if (check_if_someone_die(program->philo) || \
-			check_if_everyone_eat(program->philo))
+		if (check_if_everyone_eat(program->philo))
+		{
+			pthread_mutex_lock(&(program->data.share_data_lock));
+			program->data.is_someone_die = true;
+			pthread_mutex_unlock(&(program->data.share_data_lock));
+		}
+		if (check_if_someone_die(program))
 			break ;
-		usleep(TIME_INTERVAL_UNIT);
+		// usleep(TIME_INTERVAL_UNIT);
 	}
 	return (NULL);
 }

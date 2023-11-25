@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 14:58:47 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:29:20 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 13:31:56 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_all(t_program *program)
 {
 	free_forks(program);
 	destory_program_lock(program);
-	destory_philo_lock(program, program->data.num_of_philo);
+	destory_num_philo_lock(program, program->data.num_of_philo);
 	free(program->philo);
 }
 

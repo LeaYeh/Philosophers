@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 15:48:23 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:31:32 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 18:49:06 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ typedef struct s_program
 	t_data			data;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write;
-	pthread_mutex_t	lock;
 	t_philo			*philo;
 }	t_program;
 
@@ -83,12 +82,12 @@ bool	init_program(t_program *program, char **argv);
 bool	init_data(t_data *data, char **argv);
 bool	init_philos(t_program *program);
 void	destory_data_lock(t_data *data);
-void	destory_philo_lock(t_program *program, int num_philo);
+void	destory_num_philo_lock(t_program *program, int num);
+void	destory_philo_lock(t_philo *philo);
 
 void	free_all(t_program *program);
 void	free_forks(t_program *program);
 void	destory_program_lock(t_program *program);
-void	destory_philo_lock(t_program *program, int num_philo);
 
 size_t	get_ms_time(void);
 int		ft_usleep(size_t milliseconds);

@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 22:01:02 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:28:38 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 18:49:22 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ bool	init_philos(t_program *program)
 	i = 0;
 	while (i < program->data.num_of_philo)
 	{
-		if (!init_philo_lock(program, program->philo))
+		if (!init_philo_lock(program, &(program->philo[i])))
 			return (
-				free_forks(program), destory_philo_lock(program, i), false);
+				free_forks(program), destory_num_philo_lock(program, i), false);
 		program->philo[i].id = i;
 		program->philo[i].eat_cnt = 0;
 		program->philo[i].data = &(program->data);
@@ -60,15 +60,17 @@ bool	init_philos(t_program *program)
 	return (true);
 }
 
-void	destory_philo_lock(t_program *program, int num_philo)
+void	destory_philo_lock(t_philo *philo)
+{
+	pthread_mutex_destroy(&(philo->meal_lock));
+	pthread_mutex_destroy(&(philo->dead_lock));
+}
+
+void	destory_num_philo_lock(t_program *program, int num)
 {
 	int	i;
 
 	i = 0;
-	while (i < num_philo)
-	{
-		pthread_mutex_destroy(&(program->philo[i].meal_lock));
-		pthread_mutex_destroy(&(program->philo[i].dead_lock));
-		i++;
-	}
+	while (i < num)
+		destory_philo_lock(&(program->philo[i++]));
 }

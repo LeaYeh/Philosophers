@@ -25,7 +25,7 @@ OBJS 		:= $(SRCS:$(MAJOR_DIR)/%.c=$(BUILD_DIR)/%.o)
 CC			= cc
 RM			= rm -f
 
-CFLAGS		= -Wall -Wextra -Werror -g -I$(INC_DIR)
+CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address -I$(INC_DIR)
 
 .PHONY:		all bonus clean fclean re
 

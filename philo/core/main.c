@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 15:30:29 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:10:26 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 18:26:10 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,23 @@ void	*loop_philo(void *pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *)pointer;
-	if (philo->id % 2 == 0)
-		usleep(TIME_INTERVAL_UNIT);
+	if (philo->data->num_of_philo == 1)
+	{
+		print_message(philo, "has taken a r fork");
+		usleep((philo->data->time_to_die + 10) * 1000);
+		return (NULL);
+	}
+	if (philo->id % 2 == 1)
+		usleep(TIME_INTERVAL_UNIT * 1000);
 	while (true)
 	{
-		pthread_mutex_lock(&(philo->dead_lock));
-		if (philo->is_dead)
+		pthread_mutex_lock(&(philo->data->share_data_lock));
+		if (philo->data->is_someone_die)
+		{
+			pthread_mutex_unlock(&(philo->data->share_data_lock));
 			break ;
-		pthread_mutex_unlock(&(philo->dead_lock));
+		}
+		pthread_mutex_unlock(&(philo->data->share_data_lock));
 		do_eat(philo);
 		do_sleep(philo);
 		do_think(philo);
@@ -54,7 +63,6 @@ void	simulate(t_program *program)
 	{
 		if (pthread_join(program->philo[i].thread, NULL) != 0)
 			error_handle(program, "join philo thread failed");
-		printf("pthread_join %d\n", i);
 		i++;
 	}
 	free_all(program);
@@ -69,6 +77,5 @@ int	main(int argc, char **argv)
 		return (UNEXCEPT_FAILED);
 	if (!init_program(&program, argv))
 		return (UNEXCEPT_FAILED);
-	// free_all(&program);
 	simulate(&program);
 }

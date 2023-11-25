@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 20:06:55 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:11:03 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 18:02:18 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,21 @@ bool	is_alive(t_philo *philo)
 	bool	ret;
 
 	ret = true;
-	pthread_mutex_lock(&(philo->dead_lock));
-	if (philo->is_dead)
+	pthread_mutex_lock(&(philo->data->share_data_lock));
+	if (philo->data->is_someone_die)
 		ret = false;
-	pthread_mutex_lock(&(philo->dead_lock));
+	pthread_mutex_unlock(&(philo->data->share_data_lock));
 	return (ret);
 }
 
 bool	grab_fork(t_philo *philo)
 {
-	pthread_mutex_lock(philo->r_fork);
-	print_message(philo, "has taken a fork");
-	if (philo->data->num_of_philo == 1)
-	{
-		usleep(philo->data->time_to_die);
-		pthread_mutex_unlock(philo->r_fork);
+	if (!is_alive(philo))
 		return (false);
-	}
+	pthread_mutex_lock(philo->r_fork);
+	print_message(philo, "has taken a r fork");
 	pthread_mutex_lock(philo->l_fork);
-	print_message(philo, "has taken a fork");
+	print_message(philo, "has taken a l fork");
 	return (true);
 }
 

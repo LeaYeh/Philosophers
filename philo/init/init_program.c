@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 21:59:39 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/24 22:30:08 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/25 18:43:53 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	destory_program_lock(t_program *program)
 {
 	pthread_mutex_destroy(&(program->write));
-	pthread_mutex_destroy(&(program->lock));
 }
 
 bool	init_forks(t_program *program)
@@ -42,9 +41,6 @@ bool	init_program_lock(t_program *program)
 		return (false);
 	if (pthread_mutex_init(&(program->write), NULL) != 0)
 		return (free_forks(program), false);
-	if (pthread_mutex_init(&(program->lock), NULL) != 0)
-		return (free_forks(program),
-			pthread_mutex_destroy(&(program->write)), false);
 	return (true);
 }
 
