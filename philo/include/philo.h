@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 15:48:23 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/25 18:49:06 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/26 22:19:37 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@
 
 # define UNEXCEPT_FAILED 42
 # define SUCCESS 0
-# define TIME_INTERVAL_UNIT 10
+# define DIE_TEXT "died"
+# define SLEEP_TEXT "is sleeping"
+# define THINK_TEXT "is thinking"
+# define EAT_TEXT "is eating"
+# define GRAB_TEXT "has taken a fork"
 
 typedef enum s_status_code
 {
@@ -90,14 +94,14 @@ void	free_forks(t_program *program);
 void	destory_program_lock(t_program *program);
 
 size_t	get_ms_time(void);
-int		ft_usleep(size_t milliseconds);
+int		sleep_ms(size_t milliseconds);
 
 void	do_think(t_philo *philo);
 void	do_sleep(t_philo *philo);
 void	do_eat(t_philo *philo);
 bool	grab_fork(t_philo *philo);
 void	release_fork(t_philo *philo);
-bool	is_alive(t_philo *philo);
+bool	is_everyone_alive(t_philo *philo);
 
 void	*monitor(void *pointer);
 void	print_message(t_philo *philo, char *msg);

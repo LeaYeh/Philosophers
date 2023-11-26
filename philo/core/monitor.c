@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 23:29:47 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/25 18:38:30 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/26 22:26:36 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	print_message(t_philo *philo, char *msg)
 {
-	if (!is_alive(philo))
+	if (!is_everyone_alive(philo))
 		return ;
 	pthread_mutex_lock(philo->p_write_lock);
 	printf("%zu %d %s\n",
@@ -32,7 +32,7 @@ void	update_die_status(t_philo *philo_arr)
 	{
 		pthread_mutex_lock(&(philo_arr[i].meal_lock));
 		diff_time = get_ms_time() - philo_arr[i].last_meal_time;
-		if (diff_time >= (size_t)philo_arr[i].data->time_to_die)
+		if (diff_time > (size_t)philo_arr[i].data->time_to_die)
 		{
 			pthread_mutex_unlock(&(philo_arr[i].meal_lock));
 			break ;
@@ -42,7 +42,7 @@ void	update_die_status(t_philo *philo_arr)
 	}
 	if (i < philo_arr[0].data->num_of_philo)
 	{
-		print_message(&(philo_arr[i]), "is die");
+		print_message(&(philo_arr[i]), DIE_TEXT);
 		pthread_mutex_lock(&(philo_arr[i].data->share_data_lock));
 		philo_arr[i].data->is_someone_die = true;
 		pthread_mutex_unlock(&(philo_arr[i].data->share_data_lock));
@@ -97,7 +97,6 @@ void	*monitor(void *pointer)
 		}
 		if (check_if_someone_die(program))
 			break ;
-		// usleep(TIME_INTERVAL_UNIT);
 	}
 	return (NULL);
 }

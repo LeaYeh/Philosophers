@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 15:30:29 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/25 18:26:10 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/26 22:26:53 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,16 @@ void	*loop_philo(void *pointer)
 	philo = (t_philo *)pointer;
 	if (philo->data->num_of_philo == 1)
 	{
-		print_message(philo, "has taken a r fork");
-		usleep((philo->data->time_to_die + 10) * 1000);
+		print_message(philo, GRAB_TEXT);
+		sleep_ms(philo->data->time_to_die + 10);
 		return (NULL);
 	}
 	if (philo->id % 2 == 1)
-		usleep(TIME_INTERVAL_UNIT * 1000);
+		sleep_ms(10);
 	while (true)
 	{
-		pthread_mutex_lock(&(philo->data->share_data_lock));
-		if (philo->data->is_someone_die)
-		{
-			pthread_mutex_unlock(&(philo->data->share_data_lock));
-			break ;
-		}
-		pthread_mutex_unlock(&(philo->data->share_data_lock));
+		if (!is_everyone_alive(philo))
+			return (NULL);
 		do_eat(philo);
 		do_sleep(philo);
 		do_think(philo);
