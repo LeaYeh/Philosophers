@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 15:48:23 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/26 22:19:37 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/30 12:09:03 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ typedef struct s_program
 	pthread_mutex_t	write;
 	t_philo			*philo;
 }	t_program;
-
 
 char	*ft_strtok(char *str);
 size_t	ft_strlen(const char *str);
