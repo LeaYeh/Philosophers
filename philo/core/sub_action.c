@@ -6,7 +6,7 @@
 /*   By: lyeh <lyeh@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 20:06:55 by lyeh              #+#    #+#             */
-/*   Updated: 2023/11/26 22:24:24 by lyeh             ###   ########.fr       */
+/*   Updated: 2023/11/30 14:09:48 by lyeh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ bool	grab_fork(t_philo *philo)
 	if (!is_everyone_alive(philo))
 		return (false);
 	pthread_mutex_lock(philo->r_fork);
-	print_message(philo, "taken r fork");
+	print_message(philo, GRAB_TEXT);
 	pthread_mutex_lock(philo->l_fork);
-	print_message(philo, "taken l fork");
+	print_message(philo, GRAB_TEXT);
 	return (true);
 }
 
